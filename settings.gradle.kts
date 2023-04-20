@@ -1,3 +1,3 @@
 
-rootProject.name = "dss-unknown-file-type-poc"
+rootProject.name = "dss-3020-poc"
 
