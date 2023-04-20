@@ -63,12 +63,14 @@ class XAdESSignatureTest {
         onceSignedContainer.saveTo("output/testXAdESSignatureWithDocxFile-1.asice")
         val validator1 = asicDocumentValidatorFactory.create(onceSignedContainer) as ASiCContainerWithXAdESValidator
         validator1.containerType shouldBe ASiCContainerType.ASiC_E
+        validator1.signatures[0].mimeType shouldBe mimeType.mimeTypeString
 
         logger.info("Signing #2")
         val twiceSignedContainer = signDSSXAdESWithSmartId(listOf(onceSignedContainer))
         twiceSignedContainer.saveTo("output/testXAdESSignatureWithDocxFile-2.asice")
         val validator2 = asicDocumentValidatorFactory.create(twiceSignedContainer) as ASiCContainerWithXAdESValidator
         validator2.containerType shouldBe ASiCContainerType.ASiC_E
+        validator2.signatures[1].mimeType shouldBe mimeType.mimeTypeString
     }
 
     private fun InMemoryDocument.saveTo(path: String) = bytes.saveTo(path)
@@ -122,7 +124,7 @@ class XAdESSignatureTest {
 
         logger.info("Calculating XAdES DataToSign...")
         val dataToSign = aSiCWithXAdESService.getDataToSign(
-            documents[0],
+            documents,
             buildSignatureParameters(signingDate, certificate, listOf(certificate))
         ).bytes.toSha256().toBase64()
         logger.info("DataToSign: $dataToSign")
@@ -144,7 +146,7 @@ class XAdESSignatureTest {
 
         logger.info("Adding XAdES signature...")
         val updatedWithSignature =
-            aSiCWithXAdESService.signDocument(documents[0], buildSignatureParameters(signingDate, certificate, listOf(certificate)), signatureValue)
+            aSiCWithXAdESService.signDocument(documents, buildSignatureParameters(signingDate, certificate, listOf(certificate)), signatureValue)
         logger.info("XAdES signature added successfully")
         return InMemoryDocument(updatedWithSignature.openStream(), updatedWithSignature.name, updatedWithSignature.mimeType)
     }

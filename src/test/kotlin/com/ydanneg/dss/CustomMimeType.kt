@@ -7,7 +7,7 @@ import eu.europa.esig.dss.enumerations.MimeTypeLoader
 class CustomMimeTypeLoader : MimeTypeLoader {
 
     override fun fromMimeTypeString(mimeTypeString: String): MimeType? = CustomMimeType.values().find { mimeType ->
-        mimeType.mimeTypeString.equals(mimeType.mimeTypeString, ignoreCase = true)
+        mimeType.mimeTypeString.equals(mimeTypeString, ignoreCase = true)
     }
 
     override fun fromFileExtension(fileExtension: String): MimeType? = CustomMimeType.values().find { mimeType ->
